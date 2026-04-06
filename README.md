@@ -5,7 +5,7 @@
 > [!Important]
 > Introduzca a continuación su nombre y apellidos:
 >
-> Fulano Mengano Zutano
+> Irania Aguinaga Muñoz
 
 ## Aviso Importante
 
@@ -92,15 +92,52 @@ $v_2$, y $v_1^\perp$ es normal (perpendicular) a $v_2$.
 
 #### Ejecución de los tests unitarios
 
-Inserte a continuación una captura de pantalla que muestre el resultado de ejecutar el
-fichero `algebra/vectores.py` con la opción *verbosa*, de manera que se muestre el
-resultado de la ejecución de los tests unitarios.
+
+![test_unitario1](test_unitario1.png)
+![test_unitario2](test_unitario2.png) 
+
 
 #### Código desarrollado
 
-Inserte a continuación el código de los métodos desarrollados en esta tarea, usando los
-comandos necesarios para que se realice el realce sintáctico en Python del mismo (no
-vale insertar una imagen o una captura de pantalla, debe hacerse en formato *markdown*).
+```python 
+class Vector:
+    def __init__(self, elementos):
+        """Inicializa el vector con una lista de elementos."""
+        self.elementos = list(elementos)
+
+    def __repr__(self):
+        """Representación del vector."""
+        return f"Vector({self.elementos})"
+
+    def __mul__(self, other):
+        """Producto de Hadamard o multiplicación por escalar."""
+        if isinstance(other, (int, float)):
+            return Vector([x * other for x in self.elementos])
+        elif isinstance(other, Vector):
+            return Vector([a * b for a, b in zip(self.elementos, other.elementos)])
+
+    def __rmul__(self, other):
+        """Multiplicación escalar por la izquierda."""
+        return self.__mul__(other)
+
+    def __matmul__(self, other):
+        """Producto escalar de dos vectores."""
+        return sum(a * b for a, b in zip(self.elementos, other.elementos))
+
+    def __floordiv__(self, other):
+        """Componente paralela (v1 // v2)."""
+        denominador = other @ other
+        if denominador == 0:
+            raise ZeroDivisionError("No se puede proyectar sobre un vector nulo")
+        factor = (self @ other) / denominador
+        return other * factor
+
+    def __mod__(self, other):
+        """Componente normal (v1 % v2)."""
+        v_paralela = self // other
+        return Vector([a - b for a, b in zip(self.elementos, v_paralela.elementos)])
+```
+
 
 #### Subida del resultado al repositorio GitHub y *pull-request*
 
